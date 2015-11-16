@@ -174,7 +174,7 @@ function test(graphicID, dataFile){
           .selectAll("g")
             .delay(delay);
 
-        svg.append(falseAxis)
+        // svg.append(falseAxis)
 
 
       }
