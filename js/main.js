@@ -38,7 +38,7 @@ function test(graphicID, dataFile){
         .scale(y)
         .orient("left");
 
-    var xBreaks = [0,0.25,0.50,0.750,1]
+    var xBreaks = [0,0.25,0.50,0.750,1.0]
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
@@ -68,12 +68,12 @@ function test(graphicID, dataFile){
       data.forEach(function(d) {
         var x0 = 0;
         // console.log(d)
-        d.indicators = color.domain().map(function(name) { return {name: name, x0: x0/10, x1: x0 += +d[name]/10.0}; });
-        d.total = d.indicators[d.indicators.length - 1].x1/100.0;
+        d.indicators = color.domain().map(function(name) { return {name: name, x0: +x0/10.0, x1: x0 += +d[name]/10.0}; });
+        d.total = d.indicators[d.indicators.length-1].x1/100.0;
       });
 
       y.domain(data.map(function(d) { return d.age; }));
-      x.domain([0, 1 ]); 
+      x.domain([0.0, 1]); 
 
       var legend = d3.select("#" + graphicID)
           .selectAll(".legend")
@@ -119,8 +119,10 @@ function test(graphicID, dataFile){
           .attr("height", y.rangeBand())
           .attr("x", function(d) { return x(d.x0); })
           .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-          .style("fill", function(d) { return color(d.name); });
-
+          .style("fill", function(d) { return color(d.name); })
+        
+        
+        sortBars(d3.select("button").datum(), false)
         d3.select("#clickTap").text("Click on")
 
       var falseAxis = svg.append("line")
@@ -173,6 +175,7 @@ function test(graphicID, dataFile){
             .delay(delay);
 
         svg.append(falseAxis)
+
 
       }
 
