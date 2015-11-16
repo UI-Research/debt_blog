@@ -40,18 +40,21 @@ body {
 
 .legend{
   font-size: 14px;
-  padding: 14px;
+  padding: 1px 0px 1px 0px;
+  width: 100px;
   margin: 20px 0  0 6px;
   cursor: pointer;
   border: none;
-  color: white;
+  color: black;
   background-color: #1696d2;
   display: block;
   line-height: 12px;
-  text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   float: left;
   margin-right: 1px;
 }
-
+.legend div{
+  position: relative;
+  top: -14px;
+}
 button:focus {outline:0;}

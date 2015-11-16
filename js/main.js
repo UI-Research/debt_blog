@@ -32,14 +32,13 @@ function test(graphicID, dataFile){
 
 
     var color = d3.scale.ordinal()
-        .range(["#1696d2", "#ec008b", "#fdbf11", "#000000","#d2d2d2","#55b748","#0a4c6a"]);
+        .range(["#d2d2d2", "#ec008b", "#1696d2", "#fdbf11","#55b748","#12719e","#000000"]);
 
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left");
 
-    var xBreaks = [0,25,50,75,100]
-
+    var xBreaks = [0,0.25,0.50,0.750,1]
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
@@ -68,12 +67,13 @@ function test(graphicID, dataFile){
 
       data.forEach(function(d) {
         var x0 = 0;
-        d.indicators = color.domain().map(function(name) { return {name: name, x0: x0, x1: x0 += +d[name]}; });
-        d.total = d.indicators[d.indicators.length - 1].x1;
+        // console.log(d)
+        d.indicators = color.domain().map(function(name) { return {name: name, x0: x0/10, x1: x0 += +d[name]/10.0}; });
+        d.total = d.indicators[d.indicators.length - 1].x1/100.0;
       });
 
       y.domain(data.map(function(d) { return d.age; }));
-      x.domain([0, d3.max(data, function(d) { return d.total; })]); 
+      x.domain([0, 1 ]); 
 
       var legend = d3.select("#" + graphicID)
           .selectAll(".legend")
@@ -81,6 +81,9 @@ function test(graphicID, dataFile){
           .enter().insert("button","svg")
             .attr("class", "legend")
             .style("background", color)
+            // .text(function(d){return d})
+            .on("click", function(d){ sortBars(d, false) })
+            .append("div")
             .text(function(d){return d})
             .on("click", function(d){ sortBars(d, false) });
 
@@ -97,7 +100,7 @@ function test(graphicID, dataFile){
           .attr('transform','translate(0,'+ height +')')
         .append("text")
           .attr("class","axis-label")
-          .attr("y", 6)
+          // .attr("y", 6)
           .attr("dy", "2.5em")
           .attr("dx","30%")
           .text("Percentage");
@@ -156,27 +159,7 @@ function test(graphicID, dataFile){
           .attr("x", function(d) { return x(d.x0); })
           .attr("width", function(d) { return x(d.x1) - x(d.x0); })
           .style("fill", function(d) { return color(d.name); })
-          .style("opacity",function(d,i){
-            if(!reverse){
-              if (i != 0){ return .4}
-              else{return 1}
-            }
-            else{
-              if( i == 3){return .4}
-              else{ return 1}
-            }
-          });
 
-        if (!reverse){
-          d3.selectAll("button")
-          .style("opacity",function(d){
-            if(d == indicator) { return 1}
-            else{ return .45}
-          })
-        }
-        else{ d3.selectAll("button").style("opacity",.45)
-              d3.select("button.reverse").style("opacity",1)
-            }
 
         age
             .transition()
