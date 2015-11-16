@@ -32,13 +32,13 @@ function test(graphicID, dataFile){
 
 
     var color = d3.scale.ordinal()
-        .range(["#fcb918", "#1696d2", "#8A181A", "#838689"]);
+        .range(["#1696d2", "#ec008b", "#fdbf11", "#000000","#d2d2d2","#55b748","#0a4c6a"]);
 
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left");
 
-    var xBreaks = [0,.25,.5,.75,1]
+    var xBreaks = [0,25,50,75,100]
 
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -64,7 +64,7 @@ function test(graphicID, dataFile){
     })
 
     d3.csv("data/" + dataFile, function(error, data) {
-      color.domain(d3.keys(data[0]).filter(function(key) { return key !== "country"; }));
+      color.domain(d3.keys(data[0]).filter(function(key) { return key !== "age"; }));
 
       data.forEach(function(d) {
         var x0 = 0;
@@ -72,7 +72,7 @@ function test(graphicID, dataFile){
         d.total = d.indicators[d.indicators.length - 1].x1;
       });
 
-      y.domain(data.map(function(d) { return d.country; }));
+      y.domain(data.map(function(d) { return d.age; }));
       x.domain([0, d3.max(data, function(d) { return d.total; })]); 
 
       var legend = d3.select("#" + graphicID)
@@ -85,14 +85,7 @@ function test(graphicID, dataFile){
             .on("click", function(d){ sortBars(d, false) });
 
 
-            d3.select("#" + graphicID)
-            .insert("button","svg")
-              .attr("class", "legend reverse")
-              .style("background","#000")
-              .text("All Localized")
-              .on("click", function(){
-                sortBars("Strictly Central", true)
-              })
+
 
       svg.append("g")
           .attr("class", "y axis")
@@ -109,14 +102,14 @@ function test(graphicID, dataFile){
           .attr("dx","30%")
           .text("Percentage");
 
-        var country = svg.selectAll(".country")
+        var age = svg.selectAll(".age")
           .data(data)
         .enter().append("g")
           .attr("class", "g")
-          .attr("transform", function(d) { return "translate(0," + y(d.country) + ")"; });
+          .attr("transform", function(d) { return "translate(0," + y(d.age) + ")"; });
 
 
-        country.selectAll("rect")
+        age.selectAll("rect")
           .data(function(d) { return d.indicators })
         .enter().append("rect")
           .attr("class","bar")
@@ -147,15 +140,15 @@ function test(graphicID, dataFile){
         var transition = svg.transition().duration(750),
           delay = function(d, i) { return i * 50; };
 
-        data.sort(function(a, b) { return parseFloat(b[indicator]) - parseFloat(a[indicator]); });
+        // data.sort(function(a, b) { return parseFloat(b[indicator]) - parseFloat(a[indicator]); });
 
         if(reverse){ data.reverse()}
 
-        y.domain(data.map(function(d) { return d.country; }));
+        y.domain(data.map(function(d) { return d.age; }));
         x.domain([0, d3.max(data, function(d) { return d.total; })]);
 
 
-        country.selectAll("rect")
+        age.selectAll("rect")
           .data(function(d) { return d.indicators })
         .transition()
           .delay(delay)
@@ -165,11 +158,11 @@ function test(graphicID, dataFile){
           .style("fill", function(d) { return color(d.name); })
           .style("opacity",function(d,i){
             if(!reverse){
-              if (i != 0){ return .2}
+              if (i != 0){ return .4}
               else{return 1}
             }
             else{
-              if( i == 3){return .2}
+              if( i == 3){return .4}
               else{ return 1}
             }
           });
@@ -178,18 +171,18 @@ function test(graphicID, dataFile){
           d3.selectAll("button")
           .style("opacity",function(d){
             if(d == indicator) { return 1}
-            else{ return .35}
+            else{ return .45}
           })
         }
-        else{ d3.selectAll("button").style("opacity",.35)
+        else{ d3.selectAll("button").style("opacity",.45)
               d3.select("button.reverse").style("opacity",1)
             }
 
-        country
+        age
             .transition()
             .duration(750)
             .delay(delay)
-            .attr("transform", function(d) { return "translate(0," + y(d.country) + ")"; });
+            .attr("transform", function(d) { return "translate(0," + y(d.age) + ")"; });
 
         transition.select(".y.axis")
             .call(yAxis)
@@ -205,5 +198,4 @@ function test(graphicID, dataFile){
   pymChild = new pym.Child({ renderCallback: drawGraphic });
 }
 
-test("healthGraphic","health.csv")
-test("educationGraphic","education.csv")
+test("healthGraphic","debt.csv")
