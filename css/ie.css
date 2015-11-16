@@ -1,5 +1,5 @@
 .legend div{
   position: relative;
-  top: 0px;
+  top: 0px !important;
   color: white !important;
 }
